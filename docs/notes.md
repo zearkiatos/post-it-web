@@ -1,2 +1,5 @@
 # For create users entity
-`php console make:user`
+`php bin/console make:user`
+
+# For create auth
+`php bin/console make:user`
