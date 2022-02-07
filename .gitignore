@@ -21,3 +21,4 @@
 
 .env
 mysql_volume
+.DS_Store

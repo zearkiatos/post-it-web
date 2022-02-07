@@ -1,0 +1,42 @@
+name: PHP CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: 
+      name: staging
+    strategy:
+      matrix:
+        php-version: [8.x]
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Setup PHP with PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        extensions: imagick, swoole
+    - name: Generate build number
+      run: echo "The build number $GITHUB_RUN_NUMBER 🏗"
+    - name: Install PHP and Composer 🧑🏽‍💼🎶
+      run: |
+        php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
+        HASH="$(wget -q -O - https://composer.github.io/installer.sig)" &&
+        php -r "if (hash_file('SHA384', 'composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" &&
+        php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
+        composer
+    - name: Install and config Symfony 🎼
+      run: |
+        wget https://get.symfony.com/cli/installer -O - | bash &&
+        export PATH="$HOME/.symfony/bin:$PATH" &&
+        symfony server:ca:install
+    - name: Install dependencies
+      run: |
+        touch .env
+        cat .env.dev > .env
+        composer dump
+        composer install
+    - name: Build docker 🐳
+      run: docker build . -t=post-it-web:ghb-$GITHUB_RUN_NUMBER

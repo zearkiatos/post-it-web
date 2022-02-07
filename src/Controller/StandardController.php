@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\User;
 use App\Form\UserType;
+use App\Shared\Constants\Roles;
 
 class StandardController extends AbstractController
 {
@@ -27,6 +28,7 @@ class StandardController extends AbstractController
 
         if ($registerForm->isSubmitted() && $registerForm->isValid()) {
             $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
+            $user->setRoles([Roles::ROLE_USER]);
             $user->setPassword($hashedPassword);
             $entityManager->persist($user);
             $entityManager->flush();
