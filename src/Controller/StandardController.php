@@ -17,7 +17,7 @@ class StandardController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index() {
-        return new JsonResponse(['success' => 'Your login was successfully']);
+        return $this->render('standard/index.html.twig');
     }
     #[Route('/register', name: 'register')]
     public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
@@ -33,7 +33,7 @@ class StandardController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
         }
-        return $this->render('standard/index.html.twig', [
+        return $this->render('standard/register.html.twig', [
             'registerForm' => $registerForm->createView()
         ]);
     }
