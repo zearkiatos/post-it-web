@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+Post
+{% endblock %}
+
+{% block body %}
+	{{parent()}}
+    {{dump(post)}}
+{% endblock %}

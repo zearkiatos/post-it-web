@@ -5,4 +5,22 @@
 
 {% block body %}
 	{{parent()}}
+	{{dump(paginations)}}
+	<div class="my-3 container">
+		<div class="row">
+			{% for post in paginations %}
+				<div class="col-md-4" onclick="window.location.href='{{path('view_post', {id: post.id})}}'">
+					<div class="p-3 border rounded">
+						<img src={{asset('uploads/post/'~post.imageName)}} width="100%" alt="{{post.category.name}}"/>
+						Author:
+						{{post.user.email}}
+					</diV>
+
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div class="navigation">
+		{{ knp_pagination_render(paginations) }}
+	</div>
 {% endblock %}

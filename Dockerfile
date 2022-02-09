@@ -7,7 +7,8 @@ RUN wget https://get.symfony.com/cli/installer -O - | bash && \
     mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 
 RUN apk update && apk upgrade
-RUN docker-php-ext-install pdo_mysql
+RUN apk --no-cache add postgresql-dev
+RUN docker-php-ext-install pdo pdo_pgsql
     
 RUN symfony server:ca:install
 
