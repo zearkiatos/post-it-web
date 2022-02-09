@@ -45,4 +45,10 @@ class PostController extends AbstractController
             'formPost' => $formPost->createView(),
         ]);
     }
+
+    #[Route('/post/view/post/{id}', name: 'view_post')]
+    public function viewPost(Post $post)
+    {
+        return $this->render('post/view_post.html.twig', ['post' => $post]);
+    }
 }

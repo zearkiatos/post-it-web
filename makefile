@@ -3,3 +3,9 @@ docker-develop-up:
 
 docker-develop-down:
 	docker-compose -f docker-compose.develop.yml down
+
+docker-up:
+	docker-compose up --build
+
+docker-down:
+	docker-compose down
