@@ -1,10 +1,30 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-Post
+	Post
 {% endblock %}
 
 {% block body %}
 	{{parent()}}
-    {{dump(post)}}
+	<div class="container my-3">
+		<div class="row">
+			<div class="col-md-6">
+				<img src="{{asset('uploads/post/'~post.imagename)}}" width="100%"/>
+			</div>
+			<div class="col-md-6">
+                <h1>{{post.title}}</hi>
+				<div class="my-1">
+					<strong>Author:
+						{{post.user.email}}</strong>
+				</div>
+				<div class="my-1">
+					<strong>Category:
+						{{post.category.name}}</strong>
+				</div>
+				<hr/>
+				<div>{{post.content}}</div>
+			</div>
+		</div>
+	</div>
+	{{dump(post)}}
 {% endblock %}
