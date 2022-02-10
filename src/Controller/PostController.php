@@ -12,6 +12,8 @@ use Exception;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Form\PostType;
 use App\Entity\Post;
+use App\Entity\Comment;
+use App\Form\CommentType;
 
 class PostController extends AbstractController
 {
@@ -47,8 +49,26 @@ class PostController extends AbstractController
     }
 
     #[Route('/post/view/post/{id}', name: 'view_post')]
-    public function viewPost(Post $post)
+    public function viewPost(Post $post, EntityManagerInterface $entityManager, Request $request)
     {
-        return $this->render('post/view_post.html.twig', ['post' => $post]);
+        $comment = new Comment();
+        $formComment = $this->createForm(CommentType::class, $comment);
+        $comments = $entityManager->getRepository(Comment::class)->findBy(['post' => $post]);
+        $formComment->handleRequest($request);
+
+        if ($formComment->isSubmitted() && $formComment->isValid()) {
+            $comment->setUser($this->getUser());
+            $comment->setPost($post);
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            $this->addFlash("success", "Your comment was added successfully");
+            return $this->redirectToRoute('view_post', ['id' => $post->getId()]);
+        }
+
+        return $this->render('post/view_post.html.twig', [
+            'post' => $post,
+            'formComment' => $formComment->createView(),
+            'comments' => $comments
+        ]);
     }
 }
