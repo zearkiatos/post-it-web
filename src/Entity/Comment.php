@@ -4,10 +4,16 @@ namespace App\Entity;
 
 use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
 class Comment
 {
+
+    public function __construct()
+    {
+        $this->creation_date = new DateTime(); 
+    }
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
