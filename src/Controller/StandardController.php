@@ -22,7 +22,7 @@ class StandardController extends AbstractController
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            10
+            6
         );
         return $this->render('standard/index.html.twig', [
             'paginations' => $pagination
