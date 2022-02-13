@@ -9,3 +9,7 @@
 # Create a CRUD
 
 `php bin/console make:crud`
+
+# Create commands
+
+`php bin/console make:command`
