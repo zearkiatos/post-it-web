@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: develop.Dockerfile
+    env_file:
+      - .env.dev
+    container_name: post-it-web
+    volumes: 
+      - ".:/app"
+    restart: on-failure
+    ports:
+      - "8001:8000"
+    tty: true
+    depends_on:
+      - db
+    links:
+      - db
+    networks:
+      - post-it-network
+  db:
+    build:
+      context: .
+      dockerfile: mysql.Dockerfile
+    container_name: post-it-db
+    env_file:
+      - mysql.env
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./mysql_volume:/var/lib/mysql"
+    networks:
+      - post-it-network
+networks:
+  post-it-network:
+    driver: bridge

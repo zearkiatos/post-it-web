@@ -1,0 +1,50 @@
+image: docker:latest
+variables:
+  DOCKER_DRIVER: overlay
+  CRYPTOGRAPHY_DONT_BUILD_RUST: 1
+services:
+  - docker:dind
+
+before_script:
+    - apk update
+    - apk upgrade
+    - apk add wget
+    - apk add nginx
+    - apk add php8-cli
+    - apk add php php8-fpm php8-opcache php8-xml php8-dom php8-xmlwriter php8-tokenizer
+    - apk add php8-openssl php8-json php8-phar php8-iconv php8-mbstring php8-ctype php8-pdo 
+    - find / -name php -type f
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - HASH="$(wget -q -O - https://composer.github.io/installer.sig)"
+    - php -r "if (hash_file('SHA384', 'composer-setup.php') === '$HASH') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    - php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+    - composer
+    - apk add --no-cache bash
+    - wget https://get.symfony.com/cli/installer -O - | bash
+    - mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+    - touch .env && cat .env.dev > .env
+    - symfony server:ca:install
+
+stages:
+  - install
+  - build-docker
+
+install-dependencies:
+  stage: install
+  script:
+    - composer dump
+    - composer install
+  artifacts:
+    expire_in: 1hr
+    paths:
+      - vendor/
+  cache:
+    paths:
+      - vendor/
+
+build-docker:
+  stage: build-docker
+  dependencies:
+    - install-dependencies
+  script:
+    - docker build . -t=post-it-web:glb-${CI_PIPELINE_IID}

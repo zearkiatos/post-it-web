@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    container_name: post-it-web
+    volumes: 
+      - ".:/app"
+    restart: on-failure
+    ports:
+      - "8001:8000"
+    tty: true
