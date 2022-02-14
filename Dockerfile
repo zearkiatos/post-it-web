@@ -8,7 +8,9 @@ RUN wget https://get.symfony.com/cli/installer -O - | bash && \
 
 RUN apk update && apk upgrade
 RUN apk --no-cache add postgresql-dev
+RUN apk add --update nodejs npm
 RUN docker-php-ext-install pdo pdo_pgsql
+RUN curl https://cli-assets.heroku.com/install.sh | sh
     
 RUN symfony server:ca:install
 
@@ -16,4 +18,4 @@ RUN composer dump
 
 EXPOSE 8000
 
-ENTRYPOINT ["sh", "./docker/entrypoint.sh"]
+ENTRYPOINT ["sh", "./docker/entrypoint-prod.sh"]
